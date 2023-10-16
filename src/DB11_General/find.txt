@@ -1,0 +1,65 @@
+find の種類
+
+.find({
+  select: { name: true },
+  where: { },
+  order: { name: "ASC" }
+})
+-- SELECT "name" FROM TABLE
+
+.find({where: { COL_STR: "John" }})
+.find({where: { COL_STR: Not("John") }})
+.find({where: { COL_STR: Like("%John%") }})
+.find({where: { COL_STR: In(["John", "Steve"]) }})
+.find({where: { COL_STR: Not(In(["John", "Steve"])) }})
+//.find({where: { COL_STR: Any(["John", "Steve"]) }})
+.find({where: { COL_STR: IsNull() }})
+.find({where: { COL_STR: Raw("averCOL_NUMAge - 4") }})
+
+.find({where: { COL_NUM: LessThan(10) }});
+.find({where: { COL_NUM: LessThanOrEqual(10) }});
+.find({where: { COL_NUM: MoreThan(10) }});
+.find({where: { COL_NUM: MoreThanOrEqual(10) }});
+.find({where: { COL_NUM: Between(1, 10) }});
+
+.find({ where:
+  [ //配列内 OR
+    { COL_STR: "John", COL_NUM: 10 }, //Inside AND
+    { COL_STR: "Steve", COL_NUM: 12 },
+  ]
+});
+
+//---------------------------------------
+// Relations
+//---------------------------------------
+userRepository.find({
+    relations: {
+        profile: true,
+        photos: true,
+        videos: true,
+    },
+})
+
+SELECT * FROM "user"
+LEFT JOIN "profile" ON "profile"."id" = "user"."profileId"
+LEFT JOIN "photos" ON "photos"."id" = "user"."photoId"
+LEFT JOIN "videos" ON "videos"."id" = "user"."videoId"
+
+userRepository.find({
+    relations: {
+        profile: true,
+        photos: true,
+        videos: {
+            videoAttributes: true,
+        },
+    },
+})
+
+SELECT * FROM "user"
+LEFT JOIN "profile" ON "profile"."id" = "user"."profileId"
+LEFT JOIN "photos" ON "photos"."id" = "user"."photoId"
+LEFT JOIN "videos" ON "videos"."id" = "user"."videoId"
+LEFT JOIN "video_attributes" ON "video_attributes"."id" = "videos"."video_attributesId"
+
+
+

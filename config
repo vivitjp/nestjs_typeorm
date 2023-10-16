@@ -1,0 +1,10 @@
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = false
+	logallrefupdates = true
+	symlinks = false
+	ignorecase = true
+[remote "origin"]
+	url = https://vivitjp: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@github.com/vivitjp/VSC_python_manga_1.git
+	fetch = +refs/heads/*:refs/remotes/origin/*

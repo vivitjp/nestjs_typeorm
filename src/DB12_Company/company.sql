@@ -1,0 +1,9 @@
+CREATE TABLE company (
+  id int NOT NULL AUTO_INCREMENT,
+  created_at datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  updated_at datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+  name varchar(16) NOT NULL COMMENT '名前',
+  city varchar(255) NOT NULL COMMENT '都市',
+  UNIQUE INDEX IDX_a76c5cd486f7779bd9c319afd2 (name),
+  PRIMARY KEY (id)
+)

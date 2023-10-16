@@ -1,0 +1,105 @@
+import {
+  Controller,
+  Get,
+  HttpException,
+  Body,
+  Delete,
+  Param,
+  Post,
+  Put,
+  ParseIntPipe,
+} from '@nestjs/common';
+import { O2O_MainService } from './oneToOneMain.service';
+import { ERROR_OBJECT } from '@/constants/errors';
+import { oneToOneMainRequest } from './dto/oneToOneMain.request.entity';
+
+@Controller('o2o_main') //URL
+export class O2O_MainController {
+  constructor(private readonly mainService: O2O_MainService) {}
+
+  //全取得
+  //【GET】: http://localhost:3000/o2o_main/
+  @Get()
+  async findAll() {
+    try {
+      return await this.mainService.findAll();
+    } catch (e) {
+      throw new HttpException({ ...ERROR_OBJECT, error: e.message }, 500);
+    }
+  }
+
+  //部分取得(引数数値)
+  //【GET】curl -XGET http://localhost:3000/o2o_main/1
+  // *文字列から数値への Built-in pipes
+  @Get('id/:id')
+  async findByID(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return await this.mainService.getByID(id);
+    } catch (e) {
+      throw new HttpException({ ...ERROR_OBJECT, error: e.message }, 500);
+    }
+  }
+
+  //全取得(Joined)
+  //【GET】: http://localhost:3000/o2o_main/joined/
+  @Get('joined')
+  async findAllJoined() {
+    try {
+      return await this.mainService.getAllJoinedQuery();
+    } catch (e) {
+      throw new HttpException({ ...ERROR_OBJECT, error: e.message }, 500);
+    }
+  }
+
+  //登録(新規保存)
+  //【POST】curl -XPOST -H "Content-Type: application/json" -d '{"name":"John"}' http://localhost:3000/o2o_main/
+  @Post()
+  async insert(@Body() data: oneToOneMainRequest): Promise<boolean> {
+    try {
+      //return await this.mainService.insert(data);
+      return await this.mainService.insert_QB(data);
+    } catch (e) {
+      throw new HttpException({ ...ERROR_OBJECT, error: e.message }, 500);
+    }
+  }
+
+  //更新
+  //【PUT】curl -XPUT -H "Content-Type: application/json" -d '{"age":28}' http://localhost:3000/o2o_main/1
+  @Put(':id')
+  async update(
+    @Param('id') id: number,
+    @Body() data: oneToOneMainRequest,
+  ): Promise<boolean> {
+    try {
+      return await this.mainService.update_QB(id, data);
+      //return await this.mainService.update(name, data);
+    } catch (e) {
+      throw new HttpException({ ...ERROR_OBJECT, error: e.message }, 500);
+    }
+  }
+
+  //挿入/更新
+  //【PUT】: DOMAIN/o2o_main/ups
+  //*postman引数 "Body:raw:json" {"name":"Steve","address":"Sendai"}
+  @Post('ups')
+  async upsert(@Body() data: oneToOneMainRequest): Promise<boolean> {
+    try {
+      return await this.mainService.upsert_QB(data);
+      //return await this.mainService.upsert(data);
+    } catch (e) {
+      throw new HttpException({ ...ERROR_OBJECT, error: e.message }, 500);
+    }
+  }
+
+  //削除
+  //【DELETE】: DOMAIN/o2o_main/1
+  @Delete(':id')
+  async delete(@Param('id') id: number): Promise<boolean> {
+    try {
+      return await this.mainService.delete_QB(id);
+      //return await this.mainService.delete(name);
+    } catch (e) {
+      throw new HttpException({ ...ERROR_OBJECT, error: e.message }, 500);
+    }
+  }
+}
